@@ -57,15 +57,39 @@ public:
 
         // vertecies yang di pass ke GPU
         float positions[] = {
+              // Segitiga pertama
              0.5f,  0.5f, // 0
-             0.5f, -0.5f, // 1
-            -0.5f, -0.5f, // 2
-            -0.5f,  0.5f  // 3
+             0.5f,  0.0f, // 1
+             0.0f,  0.5f, // 2
+
+             // Segitiga kedua
+            -0.5f, -0.5f, // 3
+             0.0f, -0.5f, // 4
+            -0.5f,  0.0f, // 5
+
+             // Segitiga ketiga
+            -0.5f,  0.5f, // 6
+             0.0f,  0.5f, // 7
+            -0.5f,  0.0f, // 8
+
+             // Segitiga keempat
+             0.5f, -0.5f, // 9
+             0.0f, -0.5f, // 10
+             0.5f,  0.0f  // 11
         };
 
         unsigned int indices[] = {
+            // Segitiga pertama
             0, 1, 2,
-            2, 3, 0
+
+            // Segitiga kedua
+            3, 4, 5,
+
+            // Segitiga ketiga
+            6, 7, 8,
+
+            // Segitiga keempat
+            9, 10, 11
         };
 
         // Initialize Vertex Array Buffer
@@ -75,7 +99,7 @@ public:
         // setup vertex buffers
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 2 * 12 * sizeof(float), positions, GL_STATIC_DRAW);
 
         // setting the layout
         glEnableVertexAttribArray(0);
@@ -90,7 +114,7 @@ public:
 
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * 4 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
         glBindVertexArray(0);
         glUseProgram(0);
@@ -108,7 +132,7 @@ public:
         glBindVertexArray(vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr);
 
 
         // glDrawArrays(GL_TRIANGLES, 0, 3);
