@@ -17,7 +17,7 @@
 #include <common/controls.hpp>
 #include <common/shader.hpp>
 
-#define GLCall(x) GLClearError(); x; GLLogCall(#x, __FILE__, __LINE__)
+#define GLCall(x) GLClearError(); x; GLLogCall(#x, _FILE, __LINE_)
 
 static void GLClearError() {
     while (glGetError() != GL_NO_ERROR);
@@ -39,7 +39,7 @@ public:
     MainScene (GLFWwindow* window) {
         this->window = window;
 
-        glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+        glClearColor(0.0f, 0.2f, 0.0f, 0.0f);
 
         // Enable depth test
         glEnable(GL_DEPTH_TEST);
@@ -57,15 +57,20 @@ public:
 
         // vertecies yang di pass ke GPU
         float positions[] = {
-             0.5f,  0.5f, // 0
-             0.5f, -0.5f, // 1
-            -0.5f, -0.5f, // 2
-            -0.5f,  0.5f  // 3
+             0.f,   0.0f, // 0
+             0.5f,  0.0f, // 1
+            0.0f,  0.5f, // 2
+            0.f,  -0.5f, // 3
+            -0.5f,  0.0f, // 4
+            0.5f,  -0.5f, //5
+            -0.5f, 0.5f //6
         };
 
         unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
+            0, 2, 1,
+            3, 4, 0,
+            1, 3, 5,
+            2, 4, 6
         };
 
         // Initialize Vertex Array Buffer
@@ -75,7 +80,7 @@ public:
         // setup vertex buffers
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, 12 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
 
         // setting the layout
         glEnableVertexAttribArray(0);
@@ -90,7 +95,7 @@ public:
 
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
         glBindVertexArray(0);
         glUseProgram(0);
@@ -108,7 +113,7 @@ public:
         glBindVertexArray(vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr);
 
 
         // glDrawArrays(GL_TRIANGLES, 0, 3);
