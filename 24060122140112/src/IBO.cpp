@@ -52,53 +52,65 @@ public:
         start();
     }
 
-    void start() {
-        programId = LoadShaders("res/shader/super_basic.vs", "res/shader/super_basic.fs");
+   void start() {
+    programId = LoadShaders("res/shader/super_basic.vs", "res/shader/super_basic.fs");
 
-        // vertecies yang di pass ke GPU
-        float positions[] = {
-             0.5f,  0.5f, // 0
-             0.5f, -0.5f, // 1
-            -0.5f, -0.5f, // 2
-            -0.5f,  0.5f  // 3
-        };
+    float positions[] = {
+        // Vertex positions for the star
+        0.0f,  0.5f,   // 0
+        0.15f, 0.15f,  // 1
+        0.5f,  0.15f,  // 2
+        0.2f,  -0.15f, // 3
+        0.3f,  -0.5f,  // 4
+        0.0f,  -0.25f, // 5
+        -0.3f, -0.5f,  // 6
+        -0.2f, -0.15f, // 7
+        -0.5f, 0.15f,  // 8
+        -0.15f, 0.15f // 9
+    };
 
-        unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
+    unsigned int indices[] = {
+        // Indices to form the star
+        0, 1, 2,
+        0, 2, 3,
+        0, 3, 4,
+        0, 4, 5,
+        0, 5, 6,
+        0, 6, 7,
+        0, 7, 8,
+        0, 8, 9,
+        0, 9, 1
+    };
 
-        // Initialize Vertex Array Buffer
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
+    // Initialize Vertex Array Buffer
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-        // setup vertex buffers
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+    // Setup vertex buffers
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, 10 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
 
-        // setting the layout
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(
-            0, // index untuk layout VAO
-            2, // vector size of data type
-            GL_FLOAT, // data type
-            GL_FALSE, // normalized? map to 0 - 255
-            2 * sizeof(float), // gaps
-            0                  // offset
-        );
+    // Setting the layout
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(
+        0,                  // Index untuk layout VAO
+        2,                  // Vector size of data type
+        GL_FLOAT,           // Data type
+        GL_FALSE,           // Normalized? Map to 0 - 255
+        2 * sizeof(float),  // Gaps
+        0                   // Offset
+    );
 
-        glGenBuffers(1, &ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 27 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-        glBindVertexArray(0);
-        glUseProgram(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    }
-
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
     void update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
@@ -108,7 +120,7 @@ public:
         glBindVertexArray(vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, 27, GL_UNSIGNED_INT, nullptr);
 
 
         // glDrawArrays(GL_TRIANGLES, 0, 3);
