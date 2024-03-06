@@ -137,4 +137,4 @@ unsigned int indices[] = {
 
         glDrawArrays(GL_TRIANGLES, 4, 16);
     }
-};
+}; 
