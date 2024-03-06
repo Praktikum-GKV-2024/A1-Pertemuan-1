@@ -52,65 +52,98 @@ public:
         start();
     }
 
-    void start() {
-        programId = LoadShaders("res/shader/super_basic.vs", "res/shader/super_basic.fs");
+    #include <GLFW/glfw3.h>
 
-        // vertecies yang di pass ke GPU
-        float positions[] = {
-             0.5f,  0.5f, // 0
-             0.5f, -0.5f, // 1
-            -0.5f, -0.5f, // 2
-            -0.5f,  0.5f  // 3
-        };
+void start() {
+    programId = LoadShaders("res/shader/super_basic.vs", "res/shader/super_basic.fs");
 
-        unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
+    // Verteks untuk empat segitiga bersebelahan dengan ukuran yang sama
+    float positions[] = {
+        // Segitiga pertama (segitiga kiri atas)
+        -0.5f,  0.25f, // atas kiri
+        -1.0f, -0.25f, // kiri bawah
+         0.0f, -0.25f, // kanan bawah
+        // Segitiga kedua (segitiga kiri bawah)
+        -0.5f, -0.25f, // atas kiri
+        -1.0f, -0.75f, // kiri bawah
+         0.0f, -0.75f, // kanan bawah
+        // Segitiga ketiga (segitiga kanan atas)
+         0.5f,  0.25f, // atas kiri
+         1.0f, -0.25f, // kiri bawah
+         0.0f, -0.25f, // kanan bawah
+        // Segitiga keempat (segitiga kanan bawah)
+         0.5f, -0.25f, // atas kiri
+         1.0f, -0.75f, // kiri bawah
+         0.0f, -0.75f  // kanan bawah
+    };
 
-        // Initialize Vertex Array Buffer
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
+    unsigned int indices[] = {
+        // Segitiga pertama
+        0, 1, 2,
+        // Segitiga kedua
+        3, 4, 5,
+        // Segitiga ketiga
+        6, 7, 8,
+        // Segitiga keempat
+        9, 10, 11
+    };
 
-        // setup vertex buffers
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+    // Initialize Vertex Array Buffer
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-        // setting the layout
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(
-            0, // index untuk layout VAO
-            2, // vector size of data type
-            GL_FLOAT, // data type
-            GL_FALSE, // normalized? map to 0 - 255
-            2 * sizeof(float), // gaps
-            0                  // offset
-        );
+    // Setup vertex buffers
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, 12 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
 
-        glGenBuffers(1, &ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    // Setting the layout
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(
+        0, // Index untuk layout VAO
+        2, // Ukuran vektor dari tipe data
+        GL_FLOAT, // Tipe data
+        GL_FALSE, // Dinormalisasi? Memetakan ke 0 - 255
+        2 * sizeof(float), // Jarak antar verteks
+        0                  // Offset
+    );
 
-        glBindVertexArray(0);
-        glUseProgram(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 12 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 
-    }
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
 
-    void update() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        /* do every frame here*/
-        glUseProgram(programId);
+void update() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    /* Lakukan di setiap frame di sini */
+    glUseProgram(programId);
 
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    // Ambil lebar dan tinggi layar
+    int screenWidth, screenHeight;
+    glfwGetWindowSize(window, &screenWidth, &screenHeight);
+
+    // Hitung posisi segitiga berdasarkan lebar dan tinggi layar
+    float offsetX = (float)screenWidth / 2.0f;
+    float offsetY = (float)screenHeight / 2.0f;
+
+    // Matriks transformasi untuk menggeser segitiga ke pusat layar
+    mat4 model = glm::translate(mat4(1.0f), vec3(offsetX, offsetY, 0.0f));
+
+    // Ambil lokasi uniform model dari program shader
+    GLuint modelLoc = glGetUniformLocation(programId, "model");
+
+    // Gambar empat segitiga
+    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr);
+}
 
 
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
-    }
 };
