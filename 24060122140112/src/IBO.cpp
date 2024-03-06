@@ -56,7 +56,7 @@ public:
     programId = LoadShaders("res/shader/super_basic.vs", "res/shader/super_basic.fs");
 
     float positions[] = {
-        // Vertex positions for the star
+        // koordinat bintang
         0.0f,  0.5f,   // 0
         0.15f, 0.15f,  // 1
         0.5f,  0.15f,  // 2
@@ -70,7 +70,7 @@ public:
     };
 
     unsigned int indices[] = {
-        // Indices to form the star
+        // Membuat Bintang
         0, 1, 2,
         0, 2, 3,
         0, 3, 4,
