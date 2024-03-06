@@ -53,64 +53,76 @@ public:
     }
 
     void start() {
-        programId = LoadShaders("res/shader/super_basic.vs", "res/shader/super_basic.fs");
+    programId = LoadShaders("res/shader/super_basic.vs", "res/shader/super_basic.fs");
 
-        // vertecies yang di pass ke GPU
-        float positions[] = {
-             0.5f,  0.5f, // 0
-             0.5f, -0.5f, // 1
-            -0.5f, -0.5f, // 2
-            -0.5f,  0.5f  // 3
-        };
+    // vertices passed to GPU
+    float positions[] = {
+     -0.8, 0.0, //0
+     0.0, 0.6, //1
+     0.0, 0.8, //2
+     0.6, 0.0, //3
+     0.8, 0.0, //4
 
-        unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-        };
+     -0.4, 0.0, //5
+     -0.2, 0.0, //6 pusat
+     0.0, -0.4, //7
 
-        // Initialize Vertex Array Buffer
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
-
-        // setup vertex buffers
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, 4 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
-
-        // setting the layout
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(
-            0, // index untuk layout VAO
-            2, // vector size of data type
-            GL_FLOAT, // data type
-            GL_FALSE, // normalized? map to 0 - 255
-            2 * sizeof(float), // gaps
-            0                  // offset
-        );
-
-        glGenBuffers(1, &ibo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
-        glBindVertexArray(0);
-        glUseProgram(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    }
-
-    void update() {
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        /* do every frame here*/
-        glUseProgram(programId);
-
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+     0.2, 0.0, //8
+     0.0, 0.0, //9 pusat
+     0.0, 0.2  //10
 
 
-        // glDrawArrays(GL_TRIANGLES, 0, 3);
-    }
+
+
+};
+
+    unsigned int indices[] = {
+        1, 0, 3,  // triangle 1
+    3, 0, 4,  // triangle 2
+    5, 6, 7, //triangle 3
+    8, 9, 10 //triangel 4
+    };
+
+    // Initialize Vertex Array Buffer
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+
+    // setup vertex buffers
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, 10 * 2 * sizeof(float), positions, GL_STATIC_DRAW);
+
+    // setting the layout
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(
+        0, // index for VAO layout
+        2, // vector size of data type
+        GL_FLOAT, // data type
+        GL_FALSE, // normalized? map to 0 - 255
+        2 * sizeof(float), // gaps
+        0                  // offset
+    );
+
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 11 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void update() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    /* do every frame here*/
+    glUseProgram(programId);
+
+    glBindVertexArray(vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
+    glDrawElements(GL_TRIANGLES, 11, GL_UNSIGNED_INT, nullptr);
+    
+};
 };
