@@ -4,7 +4,5 @@
 layout(location = 0) out vec4 color;
 
 void main(){
-
-	// Output color, warna yang akan digambar ke layar
-	color = vec4(1., 0., 0., 1.);
+	FragColor = vec4(color, 1.0);
 }
